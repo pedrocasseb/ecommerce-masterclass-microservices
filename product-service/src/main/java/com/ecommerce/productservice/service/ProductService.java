@@ -2,6 +2,7 @@ package com.ecommerce.productservice.service;
 
 import com.ecommerce.productservice.dto.ProductRequest;
 import com.ecommerce.productservice.dto.ProductResponse;
+import com.ecommerce.productservice.exception.ProductNotFoundException;
 import com.ecommerce.productservice.model.Product;
 import com.ecommerce.productservice.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,7 @@ public class ProductService {
             updateProductFromRequest(product, request);
             productRepository.save(product);
             return mapToResponse(product);
-        }).orElseThrow(() -> new RuntimeException("Product not found: " + id));
+        }).orElseThrow(() -> new ProductNotFoundException(id));
     }
 
     public List<ProductResponse> getAllProducts() {
@@ -35,7 +36,8 @@ public class ProductService {
     }
 
     public ProductResponse getProduct(Long id) {
-        Product product = productRepository.findByIdAndActiveTrue(id).orElseThrow(() -> new RuntimeException("Product not found: " + id));
+        Product product = productRepository.findByIdAndActiveTrue(id)
+                .orElseThrow(() -> new ProductNotFoundException(id));
         return mapToResponse(product);
     }
 

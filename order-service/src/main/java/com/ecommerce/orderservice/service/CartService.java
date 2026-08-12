@@ -3,15 +3,18 @@ package com.ecommerce.orderservice.service;
 import com.ecommerce.orderservice.clients.ProductServiceClient;
 import com.ecommerce.orderservice.dto.CartItemRequest;
 import com.ecommerce.orderservice.dto.ProductResponse;
+import com.ecommerce.orderservice.exception.ProductNotFoundException;
+import com.ecommerce.orderservice.exception.ProductServiceUnavailableException;
 import com.ecommerce.orderservice.model.CartItem;
 import com.ecommerce.orderservice.repository.CartItemRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,7 +24,15 @@ public class CartService {
     private final ProductServiceClient productServiceClient;
 
     public boolean addToCart(String userId, CartItemRequest request) {
-        ProductResponse productResponse = productServiceClient.getProductDetails(Long.valueOf(request.getProductId()));
+        ProductResponse productResponse;
+        try {
+            productResponse = productServiceClient.getProductDetails(Long.valueOf(request.getProductId()));
+        } catch (HttpClientErrorException.NotFound e) {
+            throw new ProductNotFoundException(Long.valueOf(request.getProductId()));
+        } catch (HttpServerErrorException e) {
+            throw new ProductServiceUnavailableException(Long.valueOf(request.getProductId()), e);
+        }
+
         if (productResponse == null){
             return false;
         }
