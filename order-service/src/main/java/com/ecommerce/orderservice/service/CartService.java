@@ -7,6 +7,8 @@ import com.ecommerce.orderservice.dto.ProductResponse;
 import com.ecommerce.orderservice.dto.UserResponse;
 import com.ecommerce.orderservice.exception.ProductNotFoundException;
 import com.ecommerce.orderservice.exception.ProductServiceUnavailableException;
+import com.ecommerce.orderservice.exception.UserNotFoundException;
+import com.ecommerce.orderservice.exception.UserServiceUnavailableException;
 import com.ecommerce.orderservice.model.CartItem;
 import com.ecommerce.orderservice.repository.CartItemRepository;
 import jakarta.transaction.Transactional;
@@ -40,9 +42,13 @@ public class CartService {
             return false;
         }
 
-        UserResponse userResponse = userServiceClient.getUserDetails(userId);
-        if(userResponse == null) {
-            return false;
+        UserResponse userResponse;
+        try {
+            userResponse = userServiceClient.getUserDetails(userId);
+        } catch (HttpClientErrorException.NotFound e) {
+            throw new UserNotFoundException(userId);
+        } catch (HttpServerErrorException e) {
+            throw new UserServiceUnavailableException(userId, e);
         }
 //
 //        Optional<User> userOpt = userRepository.findById(Long.valueOf(userId));

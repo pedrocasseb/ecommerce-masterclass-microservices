@@ -21,11 +21,9 @@ public class UserController {
         return ResponseEntity.ok(userService.fetchAllUsers());
     }
 
-    @GetMapping( "/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<UserResponse> getUser(@PathVariable String id) {
-        return userService.getUser(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        return ResponseEntity.ok(userService.getUser(id));
     }
 
     @PostMapping

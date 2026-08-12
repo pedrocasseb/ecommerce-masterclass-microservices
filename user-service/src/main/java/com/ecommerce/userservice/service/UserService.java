@@ -3,6 +3,7 @@ package com.ecommerce.userservice.service;
 import com.ecommerce.userservice.dto.AddressDTO;
 import com.ecommerce.userservice.dto.UserRequest;
 import com.ecommerce.userservice.dto.UserResponse;
+import com.ecommerce.userservice.exception.UserNotFoundException;
 import com.ecommerce.userservice.model.Address;
 import com.ecommerce.userservice.model.User;
 import com.ecommerce.userservice.repository.UserRepository;
@@ -28,10 +29,11 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public Optional<UserResponse> getUser(String id) {
-        return userRepository.findById(id).map(this::mapToResponse);
+    public UserResponse getUser(String id) {
+        return userRepository.findById(id)
+                .map(this::mapToResponse)
+                .orElseThrow(() -> new UserNotFoundException(id));
     }
-
     public boolean updateUser(String id, UserRequest user) {
         return userRepository.findById(id).map(
                 existingUser -> {
