@@ -1,8 +1,10 @@
 package com.ecommerce.orderservice.service;
 
 import com.ecommerce.orderservice.clients.ProductServiceClient;
+import com.ecommerce.orderservice.clients.UserServiceClient;
 import com.ecommerce.orderservice.dto.CartItemRequest;
 import com.ecommerce.orderservice.dto.ProductResponse;
+import com.ecommerce.orderservice.dto.UserResponse;
 import com.ecommerce.orderservice.exception.ProductNotFoundException;
 import com.ecommerce.orderservice.exception.ProductServiceUnavailableException;
 import com.ecommerce.orderservice.model.CartItem;
@@ -22,6 +24,7 @@ import java.util.List;
 public class CartService {
     private final CartItemRepository cartItemRepository;
     private final ProductServiceClient productServiceClient;
+    private final UserServiceClient userServiceClient;
 
     public boolean addToCart(String userId, CartItemRequest request) {
         ProductResponse productResponse;
@@ -33,11 +36,12 @@ public class CartService {
             throw new ProductServiceUnavailableException(Long.valueOf(request.getProductId()), e);
         }
 
-        if (productResponse == null){
+        if (productResponse == null || productResponse.getStockQuantity() < request.getQuantity()){
             return false;
         }
 
-        if(productResponse.getStockQuantity() < request.getQuantity()) {
+        UserResponse userResponse = userServiceClient.getUserDetails(userId);
+        if(userResponse == null) {
             return false;
         }
 //

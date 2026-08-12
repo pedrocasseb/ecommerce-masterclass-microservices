@@ -8,17 +8,16 @@ import org.springframework.web.client.support.RestClientAdapter;
 import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 
 @Configuration
-public class ProductServiceClientConfig {
-
+public class UserServiceClientConfig {
 
     @Bean
-    public ProductServiceClient productServiceClient(
+    public UserServiceClient userServiceClient(
             @Qualifier("loadBalancedRestClientBuilder")
             RestClient.Builder builder
     ) {
 
         RestClient restClient = builder
-                .baseUrl("http://product-service")
+                .baseUrl("http://user-service")
                 .build();
 
         RestClientAdapter adapter =
@@ -28,6 +27,6 @@ public class ProductServiceClientConfig {
                 HttpServiceProxyFactory.builderFor(adapter)
                         .build();
 
-        return factory.createClient(ProductServiceClient.class);
+        return factory.createClient(UserServiceClient.class);
     }
 }
