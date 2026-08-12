@@ -29,3 +29,7 @@ management:
 
 app:
   message: "Hello Product New"
+
+eureka:
+  instance:
+    prefer-ip-address: true
