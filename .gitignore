@@ -78,4 +78,4 @@ Thumbs.db
 .localstack/
 
 # AWS credentials
-.aws/
+.aws/evaluate-loki/.data/
