@@ -10,7 +10,6 @@ import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 @Configuration
 public class ProductServiceClientConfig {
 
-
     @Bean
     public ProductServiceClient productServiceClient(
             @Qualifier("loadBalancedRestClientBuilder")
