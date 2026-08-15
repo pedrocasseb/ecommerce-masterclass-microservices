@@ -12,6 +12,9 @@ server:
   port: 8082
 
 management:
+  tracing:
+    sampling:
+      probability: 1.0
   endpoints:
     web:
       exposure:
@@ -24,3 +27,4 @@ logging:
     rollingpolicy:
       max-file-size: 5MB
       max-history: 7
+
