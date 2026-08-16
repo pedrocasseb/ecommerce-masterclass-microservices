@@ -80,4 +80,6 @@ Thumbs.db
 # AWS credentials
 .aws/evaluate-loki/.data/
 
+logs
+
 .data
